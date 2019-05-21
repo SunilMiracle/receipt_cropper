@@ -77,11 +77,11 @@ public class CustomActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_device);
+//		setContentView(R.layout.activity_device);
 		mImageView = findViewById(R.id.image_view);
 		mTextView = findViewById(R.id.text_view);
 
-		mLabelList = loadLabelList(this);
+//		mLabelList = loadLabelList(this);
 
 		int[] inputDims = {DIM_BATCH_SIZE, DIM_IMG_SIZE_X, DIM_IMG_SIZE_Y, DIM_PIXEL_SIZE};
 		int[] outputDims = {DIM_BATCH_SIZE, mLabelList.size()};
@@ -128,7 +128,7 @@ public class CustomActivity extends BaseActivity {
 		}
 	}
 
-	@Override
+/*	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		Bitmap bitmap;
@@ -162,7 +162,7 @@ public class CustomActivity extends BaseActivity {
 					break;
 			}
 		}
-	}
+	}*/
 
 	private void runModelInference(Bitmap bitmap) {
 		if (mInterpreter == null) {

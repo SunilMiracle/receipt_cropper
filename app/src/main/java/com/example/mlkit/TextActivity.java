@@ -49,11 +49,11 @@ public class TextActivity extends BaseActivity implements View.OnClickListener {
 					runTextRecognition();
 				}
 				break;
-			case R.id.btn_cloud:
+/*			case R.id.btn_cloud:
 				if (mBitmap != null) {
 					runCloudTextRecognition();
 				}
-				break;
+				break;*/
 		}
 	}
 
@@ -92,6 +92,7 @@ public class TextActivity extends BaseActivity implements View.OnClickListener {
 
 	private void runTextRecognition() {
 		FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(mBitmap);
+
 		FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
 		detector.processImage(image).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
 			@Override
@@ -106,7 +107,7 @@ public class TextActivity extends BaseActivity implements View.OnClickListener {
 		});
 	}
 
-	private void runCloudTextRecognition() {
+/*	private void runCloudTextRecognition() {
 		MyHelper.showDialog(this);
 
 		FirebaseVisionCloudTextRecognizerOptions options = new FirebaseVisionCloudTextRecognizerOptions.Builder()
@@ -130,7 +131,8 @@ public class TextActivity extends BaseActivity implements View.OnClickListener {
 				e.printStackTrace();
 			}
 		});
-	}
+	}*/
+
 
 	private void processTextRecognitionResult(FirebaseVisionText firebaseVisionText) {
 		mTextView.setText(null);
