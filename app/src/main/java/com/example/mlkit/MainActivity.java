@@ -60,9 +60,11 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Cropping failed: " + result.getError(), Toast.LENGTH_LONG).show();
       }
 
-      Log.i(TAG, "Croppped image Uri: " + imgResultURI.toString());
+      Log.i(TAG, "Croppped image Rect: " + result.getCropRect().toString());
 
-      Bitmap croppedImage = BitmapFactory.decodeFile(imgResultURI.toString());
+      Bitmap croppedImage = BitmapFactory.decodeFile(result.getUri().toString());
+
+//      Bitmap croppedImage = result.getUri();
 
       Log.i(TAG, "Croppped image: " + croppedImage);
 
