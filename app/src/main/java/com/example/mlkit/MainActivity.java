@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +21,11 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import com.example.mlkit.helpers.TextRecognition;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,7 +53,20 @@ public class MainActivity extends AppCompatActivity {
     // handle result of CropImageActivity
     if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
       CropImage.ActivityResult result = CropImage.getActivityResult(data);
-      Uri imgResultURI = CropImage.getCaptureImageOutputUri(this);
+      Log.i(TAG, result.getOriginalUri().toString());
+      Uri imgResultURI = result.getUri();
+
+
+      Bitmap original = null;
+      try {
+        original = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imgResultURI);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+//      Bitmap original = Bitmap.createBitmap(result.getOriginalUri().toString())
+//      saveCaptureScreen( original);
+
 
       if (resultCode == RESULT_OK) {
         ((ImageView) findViewById(R.id.quick_start_cropped_image)).setImageURI(result.getUri());
@@ -62,16 +81,44 @@ public class MainActivity extends AppCompatActivity {
 
       Log.i(TAG, "Croppped image Rect: " + result.getCropRect().toString());
 
-      Bitmap croppedImage = BitmapFactory.decodeFile(result.getUri().toString());
+//      Bitmap croppedImage = BitmapFactory.decodeFile(result.getUri().toString());
 
 //      Bitmap croppedImage = result.getUri();
 
-      Log.i(TAG, "Croppped image: " + croppedImage);
+//      Log.i(TAG, "Croppped image: " + croppedImage);
+
+//      String mPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ReceiptAnalysis/" +  "recpt2.jpg";
+//      BitmapFactory.decodeFile(mPath)
 
       // perform text recogtion on cropped image
       TextRecognition textRecog = new TextRecognition();
-      textRecog.runTextRecognition(croppedImage);
+      textRecog.runTextRecognition(original);
 
+      Toast.makeText(
+              this, textRecog.total , Toast.LENGTH_LONG)
+              .show();
+
+    }
+  }
+
+  private void saveCaptureScreen(Bitmap capturedImage){
+    Log.i(TAG, "Saving captured image to file" + Environment.getExternalStorageDirectory().getAbsolutePath());
+    Date now = new Date();
+    android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+    String mPath = Environment.getExternalStorageDirectory().getAbsolutePath() +
+            "/ReceiptAnalysis";
+    File imageFile = new File(mPath + "/" + now + ".jpg");
+    FileOutputStream outputStream = null;
+
+    try {
+      outputStream = new FileOutputStream(imageFile);
+      int quality = 100;
+      capturedImage.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+      outputStream.flush();
+      outputStream.close();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 }

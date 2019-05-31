@@ -2,6 +2,7 @@ package com.example.mlkit.helpers;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import android.widget.ImageView;
@@ -18,19 +19,21 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TextRecognition {
+public class TextRecognition  extends AppCompatActivity {
 	private static final String TAG = "TextActivity" ;
 //	private Bitmap mBitmap;
 //	private ImageView mImageView;
 //	private TextView mTextView;
+	public String total;
 
 	public void runTextRecognition(Bitmap mBitmap) {
-		Log.i(TAG, "Bitmap received " + mBitmap.toString());
+		Log.i(TAG, "Bitmap received: " + mBitmap.toString());
 
 		FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(mBitmap);
 
-		FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
-		detector.processImage(image).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+		FirebaseVisionTextRecognizer texdDetector = FirebaseVision.getInstance().getOnDeviceTextRecognizer();
+		texdDetector.processImage(image).
+				addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
 			@Override
 			public void onSuccess(FirebaseVisionText texts) {
 				processTextRecognitionResult(texts);
@@ -43,15 +46,15 @@ public class TextRecognition {
 		});
 	}
 
-	private String processTextRecognitionResult(FirebaseVisionText firebaseVisionText) {
+	private void processTextRecognitionResult(FirebaseVisionText firebaseVisionText) {
 //		mTextView.setText(null);
 
 		if (firebaseVisionText.getTextBlocks().size() == 0) {
-			return "error_not_found" ;
+			Log.i(TAG, "error_not_found" );
 		}
 
 		String resultText = firebaseVisionText.getText();
-		Log.d(TAG, "onSuccess: Here is the text from the receipt "+resultText);
+		Log.i(TAG, "onSuccess: Here is the text from the receipt "+ resultText);
 
 		String regex="([0-9]+[.][0-9]+)";
 		String input= resultText;
@@ -70,8 +73,8 @@ public class TextRecognition {
 			}
 		}
 
-		Log.d(TAG, "The Total Value is : "+max);
-		return "The Total Value is : " + max;
+		Log.i(TAG, "The Total Value is : "+ max);
+		total = "The Total Value is : " + max;
 	}
 	}
 
