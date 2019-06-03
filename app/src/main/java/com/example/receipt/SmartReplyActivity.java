@@ -1,4 +1,4 @@
-package com.example.mlkit;
+package com.example.receipt;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

@@ -1,4 +1,4 @@
-package com.example.mlkit;
+package com.example.receipt;
 
 import android.Manifest;
 import android.content.Intent;
@@ -15,7 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.mlkit.helpers.MyHelper;
+import com.example.receipt.helpers.MyHelper;
 
 import java.io.File;
 

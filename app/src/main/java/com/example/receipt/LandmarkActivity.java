@@ -1,4 +1,4 @@
-package com.example.mlkit;
+package com.example.receipt;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,17 +8,19 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.mlkit.helpers.MyHelper;
+import com.example.receipt.helpers.MyHelper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.vision.FirebaseVision;
-import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
-import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector;
+import com.google.firebase.ml.vision.cloud.FirebaseVisionCloudDetectorOptions;
+import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark;
+import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmarkDetector;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.common.FirebaseVisionLatLng;
 
 import java.util.List;
 
-public class BarcodeActivity extends BaseActivity {
+public class LandmarkActivity extends BaseActivity {
 	private ImageView mImageView;
 	private TextView mTextView;
 
@@ -26,9 +28,8 @@ public class BarcodeActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_device);
-
-		mImageView = findViewById(R.id.image_view);
 		mTextView = findViewById(R.id.text_view);
+		mImageView = findViewById(R.id.image_view);
 	}
 
 	@Override
@@ -52,7 +53,7 @@ public class BarcodeActivity extends BaseActivity {
 					if (bitmap != null) {
 						mTextView.setText(null);
 						mImageView.setImageBitmap(bitmap);
-						barcodeDetector(bitmap);
+						landmarkDectector(bitmap);
 					}
 					break;
 				case RC_TAKE_PICTURE:
@@ -60,39 +61,51 @@ public class BarcodeActivity extends BaseActivity {
 					if (bitmap != null) {
 						mTextView.setText(null);
 						mImageView.setImageBitmap(bitmap);
-						barcodeDetector(bitmap);
+						landmarkDectector(bitmap);
 					}
 					break;
 			}
 		}
 	}
 
-	private void barcodeDetector(Bitmap bitmap) {
+	private void landmarkDectector(Bitmap bitmap) {
+		MyHelper.showDialog(this);
+		FirebaseVisionCloudDetectorOptions options = new FirebaseVisionCloudDetectorOptions.Builder()
+				.setModelType(FirebaseVisionCloudDetectorOptions.LATEST_MODEL)
+				.setMaxResults(5)
+				.build();
+
 		FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
-		FirebaseVisionBarcodeDetector detector = FirebaseVision.getInstance().getVisionBarcodeDetector();
-		detector.detectInImage(image).addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionBarcode>>() {
+		FirebaseVisionCloudLandmarkDetector detector = FirebaseVision.getInstance().getVisionCloudLandmarkDetector(options);
+
+		detector.detectInImage(image).addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionCloudLandmark>>() {
 			@Override
-			public void onSuccess(List<FirebaseVisionBarcode> firebaseVisionBarcodes) {
-				mTextView.setText(getInfoFromBarcode(firebaseVisionBarcodes));
+			public void onSuccess(List<FirebaseVisionCloudLandmark> firebaseVisionCloudLandmarks) {
+				MyHelper.dismissDialog();
+
+				StringBuilder result = new StringBuilder();
+				for (FirebaseVisionCloudLandmark landmark : firebaseVisionCloudLandmarks) {
+					String landmarkName = landmark.getLandmark();
+					float confidence = landmark.getConfidence();
+					result.append("Landmark: " + landmarkName + "\n");
+					result.append("Confidence: " + confidence + "\n");
+					for (FirebaseVisionLatLng loc: landmark.getLocations()) {
+						result.append("Location: " + loc.getLatitude() + "," + loc.getLongitude() + "\n");
+					}
+					result.append("\n");
+				}
+				if ("".equals(result.toString())) {
+					mTextView.setText(R.string.error_detect);
+				} else {
+					mTextView.setText(result.toString());
+				}
 			}
 		}).addOnFailureListener(new OnFailureListener() {
 			@Override
 			public void onFailure(@NonNull Exception e) {
-				mTextView.setText(R.string.error_detect);
+				MyHelper.dismissDialog();
+				mTextView.setText(e.getMessage());
 			}
 		});
-	}
-
-	private String getInfoFromBarcode(List<FirebaseVisionBarcode> barcodes) {
-		StringBuilder result = new StringBuilder();
-		for (FirebaseVisionBarcode barcode : barcodes) {
-			//int valueType = barcode.getValueType();
-			result.append(barcode.getRawValue() + "\n");
-		}
-		if ("".equals(result.toString())) {
-			return getString(R.string.error_detect);
-		} else {
-			return result.toString();
-		}
 	}
 }

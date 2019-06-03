@@ -1,4 +1,4 @@
-package com.example.mlkit.helpers;
+package com.example.receipt.helpers;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.example.mlkit.R;
+import com.example.receipt.R;
 
 import java.io.File;
 import java.io.FileNotFoundException;

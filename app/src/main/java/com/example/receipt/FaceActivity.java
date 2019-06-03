@@ -1,4 +1,4 @@
-package com.example.mlkit;
+package com.example.receipt;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.mlkit.helpers.MyHelper;
+import com.example.receipt.helpers.MyHelper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.vision.FirebaseVision;

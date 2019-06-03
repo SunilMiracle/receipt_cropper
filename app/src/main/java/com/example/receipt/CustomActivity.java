@@ -1,15 +1,12 @@
-package com.example.mlkit;
+package com.example.receipt;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.mlkit.helpers.MyHelper;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;

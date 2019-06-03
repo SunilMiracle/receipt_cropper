@@ -4,12 +4,16 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical"
-	tools:context=".MainActivity_old">
+	tools:context=".helpers.TextRecognition">
 
-	<ListView
-		android:id="@+id/list_view"
+	<TextView
+		android:id="@+id/counterTV"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:scrollbars="none"/>
+		android:layout_height="80dp"
+		android:layout_marginTop="10dp"
+		android:gravity="center"
+		android:text=""
+		android:textColor="@color/colorPrimary"
+		android:textSize="20sp" />
 
 </LinearLayout>

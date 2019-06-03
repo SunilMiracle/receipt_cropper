@@ -19,4 +19,16 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
+
+    <TextView
+        android:id="@+id/totalTV"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="Total: "
+        android:textColor="@color/colorPrimary"
+        android:visibility="invisible"
+        android:textSize="20sp" />
+
 </LinearLayout>

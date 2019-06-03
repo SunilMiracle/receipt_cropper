@@ -1,14 +1,14 @@
-package com.example.mlkit.helpers;
+package com.example.receipt.helpers;
 
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.example.mlkit.R;
+import com.example.receipt.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.vision.FirebaseVision;
@@ -21,13 +21,17 @@ import java.util.regex.Pattern;
 
 public class TextRecognition  extends AppCompatActivity {
 	private static final String TAG = "TextActivity" ;
-//	private Bitmap mBitmap;
-//	private ImageView mImageView;
-//	private TextView mTextView;
-	public String total;
+
+	//	private Bitmap mBitmap;
+	//	private ImageView mImageView;
+	//	private TextView mTextView;
+	private String total = null;
+
+	public String getTotal() {
+		return total;
+	}
 
 	public void runTextRecognition(Bitmap mBitmap) {
-		Log.i(TAG, "Bitmap received: " + mBitmap.toString());
 
 		FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(mBitmap);
 
@@ -36,7 +40,7 @@ public class TextRecognition  extends AppCompatActivity {
 				addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
 			@Override
 			public void onSuccess(FirebaseVisionText texts) {
-				processTextRecognitionResult(texts);
+				total = processTextRecognitionResult(texts);
 			}
 		}).addOnFailureListener(new OnFailureListener() {
 			@Override
@@ -46,21 +50,19 @@ public class TextRecognition  extends AppCompatActivity {
 		});
 	}
 
-	private void processTextRecognitionResult(FirebaseVisionText firebaseVisionText) {
-//		mTextView.setText(null);
+	private String processTextRecognitionResult(FirebaseVisionText firebaseVisionText) {
 
 		if (firebaseVisionText.getTextBlocks().size() == 0) {
 			Log.i(TAG, "error_not_found" );
 		}
 
 		String resultText = firebaseVisionText.getText();
-		Log.i(TAG, "onSuccess: Here is the text from the receipt "+ resultText);
+//		Log.i(TAG, "onSuccess: Here is the text from the receipt "+ resultText);
 
 		String regex="([0-9]+[.][0-9]+)";
-		String input= resultText;
 
 		Pattern pattern=Pattern.compile(regex);
-		Matcher matcher=pattern.matcher(input);
+		Matcher matcher=pattern.matcher(resultText);
 
 		float max =0;
 
@@ -74,7 +76,8 @@ public class TextRecognition  extends AppCompatActivity {
 		}
 
 		Log.i(TAG, "The Total Value is : "+ max);
-		total = "The Total Value is : " + max;
+		return String.valueOf(max);
+
 	}
-	}
+}
 
